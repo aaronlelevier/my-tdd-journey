@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="keywords" content="remark,remarkjs,markdown,slideshow,presentation" />
+    <meta name="description" content="A simple, in-browser, markdown-driven slideshow tool." />
+    <title>Remark</title>
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Droid Serif';
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h2 { font-size: 2em; }
+      .remark-slide-content h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(249, 38, 114);
+        text-decoration: none;
+      }
+      code {
+        background: #e7e8e2;
+        border-radius: 5px;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code-line-highlighted     { background-color: #373832; }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+name: inverse
+layout: true
+class: center, middle, inverse
+---
+# My TDD Journey
+
+By Aaron Lelevier
+
+twitter: [@aronysidoro](https://twitter.com/AronYsidoro)
+
+slideshow at: [https://bitbucket.org/pyaaron/my-tdd-journey](https://bitbucket.org/pyaaron/my-tdd-journey)
+---
+layout:false
+
+## Reasons why I didn't start TDD sooner
+
+It's hard
+
+It's stupid
+
+My dev process works (so I thought)
+
+Don't want to test stuff that I don't need to
+---
+layout:false
+
+## Some Quotes
+
+### "If you don't have a test to verify it works, you don't know if it it does."
+
+### "If you think about it, all the production code that  you add first has no test coverage."
+
+### "If we can't identify the bug through a test, it's probably a test set up issue."
+
+### "If you identify a bug, write a test to catch it once, so it doesn't show up again."
+---
+layout:false
+
+## Why?
+
+### I had some accounting logic in my app that I couldn't get right.
+
+## Pain!
+
+- manual testing
+- broken code
+
+## Tiger Woods
+---
+layout:false
+
+### Can you spot the bug in this code?
+
+```python
+    def one_time_payment(self, account, amount):
+        self.check_balance(account)
+        self.charge(account, amount)
+
+    def check_balance(self, account):
+        recharge_required = self.check_recharge_required(account)
+
+        if recharge_required:
+            required_balance = self.get_balance(account)
+            recharge_amt = self.calculate_recharge_amount(account,
+                                                          required_balance)
+            self.recharge(account, recharge_amt)
+```
+---
+layout:false
+
+## Some things that helped me, and what my TDD process became.
+
+1. Write a what the feature is
+2. Write a test that tests the feature
+3. Will need to create stubbed methods, in order to compile
+4. Make the test pass. Don't worry about DRY immediately
+5. Refactor
+6. ...repeat
+
+### By failing first, you can verify what you are testing for. Avoiding false positives.
+---
+layout:false
+
+## More on TDD
+
+TDD has strict tenants
+
+Different gears
+
+Don't need to test private variables, and internal implementations if you have a higher level test that tests that feature.
+---
+layout:false
+
+## Test Code
+
+Doesn't look like production code. 
+
+Test code should be clean.
+
+```python
+    def test_get_total_sms_costs__no_pricing(self):
+        total_sms = 100
+        hotel = create_hotel()
+        with self.assertRaises(Exception): # RelatedObjectDoesNotExist
+            self.assertIsNone(hotel.pricing)
+
+        ret = AcctStmt.objects.get_total_sms_costs(hotel, total_sms)
+
+        self.assertEqual(ret, -(total_sms * settings.DEFAULT_SMS_COST))
+```
+---
+layout:false
+
+## Other Thoughts
+
+Can quickly add features
+
+Can avoid long debugging sessions when I'm lost
+
+I could finally start contributing to our front-end code in EmberJs, because before TDD, my code was always broken, and I was lost.  (A little time with the framework didn't hurt!)
+
+Quick response turnaround
+---
+layout:false
+
+## Final Thoughts
+
+### Everyone can learn about TDD in there own way
+
+For me, it was manual testing, and broken code.  Clean test code has also been a blessing.
+---
+name: last-page
+template: inverse
+
+# Questions?
+
+    </textarea>
+        <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+    <script>
+      var hljs = remark.highlighter.engine;
+    </script>
+    <script>
+      var slideshow = remark.create({
+          highlightStyle: 'monokai',
+          highlightLanguage: 'remark',
+          highlightLines: true
+        }) ;
+    </script>
+  </body>
+</html>
