@@ -130,11 +130,11 @@ By Aaron Lelevier
 
 twitter: [@aronysidoro](https://twitter.com/AronYsidoro)
 
-slideshow at: [https://bitbucket.org/pyaaron/my-tdd-journey](https://bitbucket.org/pyaaron/my-tdd-journey)
+slideshow at: [https://github.com/aronysidoro/my-tdd-journey](https://github.com/aronysidoro/my-tdd-journey)
 ---
 layout:false
 
-## Reasons why I didn't start TDD sooner
+# Whu didn't I start TDD sooner
 
 It's hard
 
@@ -146,28 +146,27 @@ Don't want to test stuff that I don't need to
 ---
 layout:false
 
-## Some Quotes
+# Why should I?
 
-### "If you don't have a test to verify it works, you don't know if it it does."
+Manual testing
 
-### "If you think about it, all the production code that  you add first has no test coverage."
+Broken code
 
-### "If we can't identify the bug through a test, it's probably a test set up issue."
+Long debugging sessions
 
-### "If you identify a bug, write a test to catch it once, so it doesn't show up again."
+Senior positions often say TDD
+
+Going into a project mid way
 ---
 layout:false
 
-## Why?
+### "If you don't have a test to verify it works, you don't know if it it does."
 
-### I had some accounting logic in my app that I couldn't get right.
+### "Test the things that you care about."
+---
+layout:false
 
-## Pain!
-
-- manual testing
-- broken code
-
-## Tiger Woods
+![](tdd_flow.gif)
 ---
 layout:false
 
@@ -190,26 +189,58 @@ layout:false
 ---
 layout:false
 
-## Some things that helped me, and what my TDD process became.
+## Your code will become more modular
 
-1. Write a what the feature is
-2. Write a test that tests the feature
-3. Will need to create stubbed methods, in order to compile
-4. Make the test pass. Don't worry about DRY immediately
-5. Refactor
-6. ...repeat
+[Single Responsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle)
 
-### By failing first, you can verify what you are testing for. Avoiding false positives.
+Decompose code
+
+The way you think about problems
 ---
 layout:false
 
-## More on TDD
+## Your code will be more testable
 
-TDD has strict tenants
+```python
+# archive_guests.py
+from django.core.management.base import BaseCommand
+from concierge.tasks import archive_guests
 
-Different gears
+class Command(BaseCommand):
+    help = "Archive all Guests that are past their check-out date."
 
-Don't need to test private variables, and internal implementations if you have a higher level test that tests that feature.
+    def handle(self, *args, **options):
+        archive_guests.delay()
+```
+
+```python
+# concierge/tasks.py
+from celery import shared_task
+
+@shared_task
+def archive_guests():
+    Guest.objects.archive()
+```
+
+```python
+# concierge/models.py
+def archive(self):
+    self.need_to_archive().update(hidden=True)
+
+def need_to_archive(self):
+    today = timezone.localtime(timezone.now()).date()
+    return self.filter(check_out__lt=today, hidden=False)
+```
+---
+## Other Thoughts
+
+Can quickly add features
+
+Can avoid long debugging sessions when I'm lost
+
+I could finally start contributing to our front-end code in EmberJs.
+
+Quick response turnaround
 ---
 layout:false
 
@@ -217,7 +248,9 @@ layout:false
 
 Doesn't look like production code. 
 
-Test code should be clean.
+### But...
+
+Test code can be clean.
 
 ```python
     def test_get_total_sms_costs__no_pricing(self):
@@ -231,30 +264,16 @@ Test code should be clean.
         self.assertEqual(ret, -(total_sms * settings.DEFAULT_SMS_COST))
 ```
 ---
-layout:false
-
-## Other Thoughts
-
-Can quickly add features
-
-Can avoid long debugging sessions when I'm lost
-
-I could finally start contributing to our front-end code in EmberJs, because before TDD, my code was always broken, and I was lost.  (A little time with the framework didn't hurt!)
-
-Quick response turnaround
----
-layout:false
-
-## Final Thoughts
-
-### Everyone can learn about TDD in there own way
-
-For me, it was manual testing, and broken code.  Clean test code has also been a blessing.
----
 name: last-page
 template: inverse
 
-# Questions?
+# Final Thoughts
+
+Everyone can learn about TDD in their own way
+
+For me, it was manual testing, and broken code. Clean test code has also been a blessing.
+
+[@aronysidoro](https://twitter.com/AronYsidoro)
 
     </textarea>
         <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
